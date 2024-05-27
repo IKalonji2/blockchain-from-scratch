@@ -45,7 +45,55 @@ impl StateMachine for AccountedCurrency {
     type Transition = AccountingTransaction;
 
     fn next_state(starting_state: &Balances, t: &AccountingTransaction) -> Balances {
-        todo!("Exercise 1")
+        // if starting_state.is_empty() {
+        //     return starting_state.clone()
+        // }
+        match t {
+            AccountingTransaction::Mint { minter: _user, amount: _amount } => {
+                print!("Testing");
+                let mut _state_object = starting_state.clone();
+                let new_balance = if _state_object.contains_key(_user) { * _state_object.get(_user).unwrap() + *_amount } else {*_amount};
+                if new_balance == 0u64{
+                    return _state_object
+                }
+                _state_object.insert(*_user, new_balance);
+                
+                print!("{:?}", _state_object);
+                return _state_object
+            },
+            AccountingTransaction::Transfer { sender: _user, receiver: _receiver, amount: _amount } => {
+                let mut _state_object = starting_state.clone();
+                if _state_object.contains_key(_user){
+                    if _user.eq(_receiver){
+                        return _state_object;
+                    }
+                    let user_balance = _state_object.get(_user).unwrap();
+                    let receiver_balance =  if _state_object.contains_key(_receiver) {*_state_object.get(_receiver).unwrap()} else {0u64};
+                    if  user_balance >= _amount {
+                        _state_object.insert(*_user, user_balance-_amount);
+                        _state_object.insert(* _receiver, receiver_balance+_amount);
+                        if _state_object.get(_user).unwrap() == &0u64 {
+                            _state_object.remove(_user);
+                        }
+                        return _state_object
+                    }
+                }
+                starting_state.clone()
+            },
+            AccountingTransaction::Burn { burner: _user, amount: _amount } => {
+                let mut _state_object = starting_state.clone();
+                if _state_object.contains_key(_user) {
+                    let user_balance = _state_object.get(_user).unwrap();
+                    if user_balance > _amount {
+                        _state_object.insert(* _user, user_balance -_amount);
+                    }else if user_balance <= _amount {
+                        _state_object.remove(_user);
+                    }
+                }
+                return _state_object
+            }
+            
+        }
     }
 }
 
