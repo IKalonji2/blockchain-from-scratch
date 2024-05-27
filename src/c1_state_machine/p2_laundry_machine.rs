@@ -2,6 +2,8 @@
 //! ready to be worn again. Or course washing and wearing clothes takes its toll on the clothes, and
 //! eventually they get tattered.
 
+use std::ops::Deref;
+
 use super::StateMachine;
 
 /// This state machine models the typical life cycle of clothes as they make their way through the laundry
@@ -40,7 +42,58 @@ impl StateMachine for ClothesMachine {
     type Transition = ClothesAction;
 
     fn next_state(starting_state: &ClothesState, t: &ClothesAction) -> ClothesState {
-        todo!("Exercise 3")
+        // Jumbled code...need to better represent logic.
+        match t {
+            ClothesAction::Wear => {
+                match starting_state {
+                    ClothesState::Clean(c) => {
+                        if c <= &1u64 {ClothesState::Tattered} else {ClothesState::Dirty(c-1)}
+                    },
+                    ClothesState::Wet(c) => {
+                        if c <= &1u64 {ClothesState::Tattered} else {ClothesState::Dirty(c-1)}
+                    },
+                    ClothesState::Dirty(c) => {
+                        if c <= &1u64 {ClothesState::Tattered} else {ClothesState::Dirty(c-1)}
+                    },
+                    ClothesState::Tattered => {
+                        ClothesState::Tattered
+                    }
+                }
+            },
+            ClothesAction::Dry => {
+                match starting_state {
+                    ClothesState::Clean(c) => {
+                        if c <= &1u64 {ClothesState::Tattered} else {ClothesState::Clean(c-1)}
+                    },
+                    ClothesState::Wet(c) => {
+                        if c <= &1u64 {ClothesState::Tattered} else {ClothesState::Clean(c-1)}
+                    },
+                    ClothesState::Dirty(c) => {
+                        if c <= &1u64 {ClothesState::Tattered} else {ClothesState::Dirty(c-1)}
+                    },
+                    ClothesState::Tattered => {
+                        ClothesState::Tattered
+                    }
+                }
+            },
+            ClothesAction::Wash => {
+                match starting_state {
+                    ClothesState::Clean(c) => {
+                        if c <= &1u64 {ClothesState::Tattered} else {ClothesState::Wet(c-1)}
+                    },
+                    ClothesState::Wet(c) => {
+                        if c <= &1u64 {ClothesState::Tattered} else {ClothesState::Wet(c-1)}
+                    },
+                    ClothesState::Dirty(c) => {
+                        if c <= &1u64 {ClothesState::Tattered} else {ClothesState::Wet(c-1)}
+                    },
+                    ClothesState::Tattered => {
+                        ClothesState::Tattered
+                    }
+                }
+            }
+            
+        }
     }
 }
 
