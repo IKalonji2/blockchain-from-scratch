@@ -49,6 +49,7 @@ impl Header {
     /// the previous state, and the current state.
     fn verify_sub_chain(&self, chain: &[Header]) -> bool {
         todo!("Exercise 3")
+        //State and enstrinsic
     }
 }
 
